@@ -1,6 +1,3 @@
-#![allow(dead_code)]
-#![allow(unused_imports)]
-
 use std::collections::hash_map::DefaultHasher;
 use std::hash::{Hash, Hasher};
 use std::clone::Clone;
@@ -32,6 +29,7 @@ pub struct Dictionary<K: Clone + Hash, V: Clone> {
     table: Vec<Bucket<K, V>>
 }
 
+#[allow(dead_code)]
 impl<K: Clone + Hash + PartialEq, V: Clone> Dictionary<K, V>{
     pub fn new() -> Dictionary<K, V> {
         Dictionary {
@@ -152,7 +150,7 @@ impl<K: Clone + Hash + PartialEq, V: Clone> Dictionary<K, V>{
         } else if key_vec.is_empty() {
             panic!("Cannot create a zero-sized dict");
         } else {
-            let dict: Dictionary<K, V> = with_capacity(key_vec.len()/2)*3 + 1);
+            let mut dict: Dictionary<K, V> = Dictionary::with_capacity(key_vec.len());
             for _ in 0..key_vec.len() {
                 let key = key_vec.pop().unwrap();
                 let value = value_vec.pop().unwrap();
@@ -167,7 +165,7 @@ impl<K: Clone + Hash + PartialEq, V: Clone> Dictionary<K, V>{
         if tuples.is_empty() {
             panic!("Cannot create a zero-sized vec");
         }
-        let mut dict: Dictionary<K, V> = Dictionary::with_capacity((tuples.len()*2)/3 + 1);
+        let mut dict: Dictionary<K, V> = Dictionary::with_capacity(tuples.len());
 
         for (key, value) in tuples {
             dict.insert(key, value);
@@ -203,7 +201,7 @@ impl<K: Clone + Hash + PartialEq, V: Clone> Dictionary<K, V>{
             None => {output = None;}
         };
 
-        if self.size < self.capacity/3 { // If current size is less than 2/3 half capacity, aka less than 1/3 capacity
+        if self.size < self.capacity/3 + 1 { // If current size is less than 2/3 half capacity, aka less than 1/3 capacity
             self.resize(self.capacity/2); 
         }
 
@@ -218,10 +216,6 @@ impl<K: Clone + Hash + PartialEq, V: Clone> Dictionary<K, V>{
         let mut s = DefaultHasher::new();
         key.hash(&mut s);
         s.finish() as usize
-    }
-
-    pub fn clear(&mut self) {
-        *self = Dictionary::new();
     }
 
     // Returns a vector of keys contained in the dict

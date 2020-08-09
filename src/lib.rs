@@ -146,9 +146,10 @@ mod tests{
     #[test]
     fn down_size() {
         let mut _d = create_dict();
-        for i in 0..4{
-            _d.remove(&i);
-        }
+        
+        _d.remove(&1);
+        _d.remove(&2);
+
         assert_eq!(_d.capacity(), 5);
     }
 
@@ -181,11 +182,5 @@ mod tests{
         let _d: Dictionary<u8, u8> = Dictionary::from_tuples(_t);
         let expected_items = _d.items().into_iter().map(|x| (*x.0, *x.1)).collect();
         assert!(has_same_elements(&expected_items, &tuples));
-    }
-
-    #[test]
-    fn clear() {
-        let mut _d = create_dict();
-        _d.clear();
     }
 }
